@@ -13,6 +13,7 @@ services:
       - ./postgres/airflow_init.sql:/docker-entrypoint-initdb.d/airflow_init.sql
     networks:
       - my_network
+
   af:
     image: apache/airflow:3.3.0
     container_name: airflow_container
@@ -29,6 +30,21 @@ services:
       - my_network
     command: >
       bash -c "airflow db migrate && airflow standalone"
+
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.9.latest
+    container_name: dbt_container
+    volumes:
+      - ./dbt/my_project:/usr/app
+      - ./dbt:/root/.dbt
+    working_dir: /usr/app
+    environment:
+      DBT_PROFILES_DIR: "/root/.dbt"
+    depends_on:
+      - db
+    networks:
+      - my_network
+    command: run
     
 networks:
   my_network:

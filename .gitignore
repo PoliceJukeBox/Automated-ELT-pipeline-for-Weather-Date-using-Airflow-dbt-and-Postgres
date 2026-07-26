@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 
 postgres/data/
+
+#dbt
+target/
+dbt_packages/
+logs/
