@@ -5,7 +5,7 @@ def connect_to_db():
     print("Connecting to the database...")
     try:
         conn = psycopg2.connect(
-            host="127.0.0.1",
+            host="db",
             port=5432,
             dbname="weather_data",
             user="postgres",
@@ -18,10 +18,19 @@ def connect_to_db():
 
 def create_table(conn):
     print("Creating the weather_data table if it doesn't exist...")
+    
+    # 1. Creare Schema (gestionăm separat eventualele conflicte de catalog)
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("CREATE SCHEMA IF NOT EXISTS dev;")
+            conn.commit()
+    except psycopg2.Error:
+        conn.rollback()  # Dacă schema există deja și Postgres dă conflict, facem rollback tranzacției
+
+    # 2. Creare Tabelă
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                CREATE SCHEMA IF NOT EXISTS dev;
                 CREATE TABLE IF NOT EXISTS dev.raw_weather_data (
                     id SERIAL PRIMARY KEY,
                     city TEXT,
@@ -81,4 +90,3 @@ def main():
         if 'conn' in locals():
             conn.close()
             print("Database connection closed.")
-
