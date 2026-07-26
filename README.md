@@ -6,4 +6,4 @@ pip install -r requirements.txt
 docker-compose exec db psql -U postgres -d weather_data
 
 Airflow username: admin
-Airflow password: NMqr3ypRX9vrS2tB
+Airflow password: TmAQdvdzKfgkfHgq
