@@ -10,3 +10,27 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/airflow_init.sql:/docker-entrypoint-initdb.d/airflow_init.sql
+    networks:
+      - my_network
+  af:
+    image: apache/airflow:3.3.0
+    container_name: airflow_container
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@db:5432/airflow_db
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+    depends_on:
+      - db
+    networks:
+      - my_network
+    command: >
+      bash -c "airflow db migrate && airflow standalone"
+    
+networks:
+  my_network:
+    driver: bridge
+ 
+  

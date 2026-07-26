@@ -4,3 +4,6 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 docker-compose exec db psql -U postgres -d weather_data
+
+Airflow username: admin
+Airflow password: dxvdnB9GYuY4fpP9
